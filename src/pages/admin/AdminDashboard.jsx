@@ -1,6 +1,7 @@
-import React,{useState, useEffect} from 'react'
-import { createProductApi } from '../../apis/Api'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { createProductApi, deleteProductApi, getAllProductsApi } from '../../apis/Api'
+import {Link} from 'react-router-dom'
 
 const AdminDashboard = () => {
 
@@ -23,9 +24,13 @@ setPreviewImage(URL.createObjectURL(file))
 }
 
 //load all products when page loads
+const [products,setProducts] = useState([])
 useEffect(()=>{
-  
-})
+  getAllProductsApi().then((res)=> {
+    console.log(res.data.products)
+    setProducts(res.data.products)
+  })
+},[])
 
 //submit function
 const handleSubmit =(e) =>{
@@ -49,6 +54,25 @@ createProductApi(formData).then((res)=>{
   toast.err('Internal Server Error!')
 })
 
+}
+
+//delete product function
+const handleDelete = (id) =>{
+
+  //confirm dialog box
+  const confirm = window.confirm("Are you sure you want to delete this product?")
+  if(!confirm){
+    return
+  }else{
+    deleteProductApi(id).then((res)=>{
+      if (res.data.message == false){
+toast.error (res.data.message)
+      }else{
+        toast.success (res.data.message)
+        window.location.reload()
+      }
+    })
+  }
 }
 
   return (
@@ -118,33 +142,37 @@ createProductApi(formData).then((res)=>{
             </tr>
           </thead>
           <tbody>
-            <tr>
+           {
+            products.map((item)=>(
+              <tr>
               <td>
                 <img
-                  src='https://th.bing.com/th/id/OIP.HxV79tFMPfBAIo0BBF-sOgHaEy?rs=1&pid=ImgDetMain'
+                  src={item.produtImageUrl}
                   height={80}
                   width={80}
                 />
               </td>
-              <td>Rose</td>
-              <td>NPR.200</td>
-              <td>Flower</td>
-              <td>Flower for decoration</td>
+              <td>{item.productName}</td>
+              <td>{item.productPrice}</td>
+              <td>{item.productDescription}</td>
+              <td>{item.productCategory}</td>
               <td>
                 <div
                   className='btn-group'
                   role='group'
                   aria-label='Basic mixed styles example'
                 >
-                  <button type='button' className='btn btn-success'>
+                  <Link to ={`/admin/edit/${item._id}`}type='button' className='btn btn-success'>
                     Edit
-                  </button>
-                  <button type='button' className='btn btn-danger'>
+                  </Link>
+                  <button onClick={()=>handleDelete(item._id)}type='button' className='btn btn-danger'>
                     Delete
                   </button>
                 </div>
               </td>
             </tr>
+            ))
+           }
           </tbody>
         </table>
       </div>

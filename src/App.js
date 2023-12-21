@@ -15,6 +15,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 //for showing toast
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminEditProduct from './pages/admin/AdminEditProduct';
 
 function App() {
   return (
@@ -31,6 +32,10 @@ function App() {
 
         {/*Admin routes*/}
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
+
+        {/*Admin routes*/}
+        <Route path='/admin/edit/:id' element={<AdminEditProduct />} />
+
       </Routes>
     </Router>
   );

@@ -8,6 +8,13 @@ const Api = axios.create({
     }
 })
 
+//configuration for axios
+const config ={
+    headers : {
+        'authorization' : `Bearer ${localStorage.getItem('token')}`
+    }
+}
+
 //creating test api
 export const testApi = () => Api.get("/test");
 //http:localhost:5000/test
@@ -23,3 +30,12 @@ export const createProductApi =(formData) => Api.post('/api/product/create', for
 
 // get products Api
 export const getAllProductsApi = () => Api.get('/api/product/get_products')
+
+//get single product api
+export const getSingleProductApi = (id) => Api.get(`/api/product/get_product/${id}`)
+
+//update product 
+export const updateProductApi = (id, formData) => Api.put(`/api/product/update_product/${id}`, formData)
+
+//delete product 
+export const  deleteProductApi = (id) => Api.delete(`/api/product/delete_product/${id}`)
